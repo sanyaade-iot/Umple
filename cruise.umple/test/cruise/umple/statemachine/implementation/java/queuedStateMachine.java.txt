@@ -2,8 +2,10 @@
 /*This code was generated using the UMPLE @UMPLE_VERSION@ modeling language!*/
 
 package example;
+import java.util.*;
+import java.lang.Thread;
 
-public class Course
+public class Course implements Runnable
 {
   @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
   public @interface umplesourcefile{int[] line();String[] file();int[] javaline();int[] length();}
@@ -15,6 +17,12 @@ public class Course
   //Course State Machines
   enum Status { Open, Full }
   private Status status;
+  
+  //enumeration type of messages accepted by Course
+  enum MessType { register_M, reject_M }
+  
+  MessPool pool;
+  Thread removal;
 
   //------------------------
   // CONSTRUCTOR
@@ -23,6 +31,10 @@ public class Course
   public Course()
   {
     setStatus(Status.Open);
+    pool = new MessPool();
+    removal=new Thread(this);
+    //start the thread of Course
+    removal.start();
   }
 
   //------------------------
@@ -40,13 +52,129 @@ public class Course
     return status;
   }
 
-  public boolean setStatus(Status aStatus)
+  public boolean _register()
+  {
+    boolean wasEventProcessed = false;
+    
+    Status aStatus = status;
+    switch (aStatus)
+    {
+      case Open:
+        setStatus(Status.Full);
+        wasEventProcessed = true;
+        break;
+      default:
+        // Other states do respond to this event
+    }
+
+    return wasEventProcessed;
+  }
+
+  public boolean _reject()
+  {
+    boolean wasEventProcessed = false;
+    
+    Status aStatus = status;
+    switch (aStatus)
+    {
+      case Full:
+        setStatus(Status.Full);
+        wasEventProcessed = true;
+        break;
+      default:
+        // Other states do respond to this event
+    }
+
+    return wasEventProcessed;
+  }
+
+  private void setStatus(Status aStatus)
   {
     status = aStatus;
-    return true;
   }
 
   public void delete()
   {}
 
+  private class Message
+  {
+    MessType type;
+    
+    //Message parameters
+    Vector<Object> param;
+    
+    public Message(MessType t, Vector<Object> p)
+    {
+      type = t; 
+      param = p;
+    }
+  }
+  
+  private class MessPool {
+    Queue<Message> messages = new LinkedList<Message>();
+    
+    public synchronized void put(Message m)
+    {
+      messages.add(m); 
+      notify();
+    }
+
+    public synchronized Message getNext()
+    {
+      try {
+        while (messages.isEmpty()) 
+        {
+          wait();
+        }
+      } catch (InterruptedException e) { e.printStackTrace(); } 
+
+      //The element to be removed
+      Message m = messages.remove(); 
+      return (m);
+    }
+
+    /* for the case of a message POOL:  
+     * public synchronized Message getOneOf(MessType[] messTypes ){ //***}
+     */
+  }
+
+  //------------------------------
+  //messages accepted 
+  //------------------------------
+
+  public void register ()
+  {
+    pool.put(new Message(MessType.register_M, null)
+  }
+
+  public void reject ()
+  {
+    pool.put(new Message(MessType.reject_M, null)
+  }
+
+  
+  @Override
+  public void run ()
+  {
+    boolean status=false;
+    while (true) 
+    {
+      Message m = pool.getNext();
+      
+      switch (m.type)
+      {
+        case register_M:
+          status = _register();
+          break;
+        case reject_M:
+          status = _reject();
+          break;        
+      }
+    // and similar for other types of messages	
+    /* if urgenrQuestion has two parameters:
+     * status = _urgentQuestion((String) m.param.elementAt(0), (Teacher) m.param.elementAt(1));	
+     */
+    //if(!status) { /* write error message or raise exception */ 
+    }
+  }
 }
