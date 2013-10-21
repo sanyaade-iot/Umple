@@ -23,7 +23,7 @@ public class Student
   public Student(int aAge)
   {
     age = aAge;
-    if ( !((aAge>18)))
+    if ( !(((aAge>18))))
     {
       throw new RuntimeException("Please provide a valid age");
     }
@@ -36,7 +36,7 @@ public class Student
   public boolean setAge(int aAge)
   {
     boolean wasSet = false;
-    if (aAge>18)
+    if ((aAge>18))
     {
     age = aAge;
     wasSet = true;

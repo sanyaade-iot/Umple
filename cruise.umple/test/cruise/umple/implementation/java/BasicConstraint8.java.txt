@@ -1,0 +1,78 @@
+/*PLEASE DO NOT EDIT THIS CODE*/
+/*This code was generated using the UMPLE @UMPLE_VERSION@ modeling language!*/
+
+
+
+public class student
+{
+  @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
+  public @interface umplesourcefile{int[] line();String[] file();int[] javaline();int[] length();}
+
+  //------------------------
+  // MEMBER VARIABLES
+  //------------------------
+
+  //student Attributes
+  private int age;
+  private int weight;
+
+  //------------------------
+  // CONSTRUCTOR
+  //------------------------
+
+  public student(int aAge, int aWeight)
+  {
+    age = aAge;
+    weight = aWeight;
+    if ( !((aAge<10&&(aAge<10))))
+    {
+      throw new RuntimeException("Please provide a valid age");
+    }
+  }
+
+  //------------------------
+  // INTERFACE
+  //------------------------
+
+  public boolean setAge(int aAge)
+  {
+    boolean wasSet = false;
+    if (aAge<10&&(aAge<10))
+    {
+    age = aAge;
+    wasSet = true;
+    }
+    return wasSet;
+  }
+
+  public boolean setWeight(int aWeight)
+  {
+    boolean wasSet = false;
+    weight = aWeight;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public int getAge()
+  {
+    return age;
+  }
+
+  public int getWeight()
+  {
+    return weight;
+  }
+
+  public void delete()
+  {}
+
+
+  public String toString()
+  {
+	  String outputString = "";
+    return super.toString() + "["+
+            "age" + ":" + getAge()+ "," +
+            "weight" + ":" + getWeight()+ "]"
+     + outputString;
+  }
+}
